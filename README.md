@@ -3,11 +3,11 @@ Get Gstack
 
 To install the Gstack command, just run:
 
-    curl -fsSL https://get.gstack.io/please | sh
+    curl -fsSL http://get.gstack.io/please | sh
 
 or:
 
-    wget -qO- https://get.gstack.io/please | sh
+    wget -qO- http://get.gstack.io/please | sh
 
 Then you can check it is installed with:
 

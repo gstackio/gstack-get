@@ -2,19 +2,19 @@
 set -e
 #
 # This script is meant for quick & easy install via:
-#   curl -fsSL https://please.gstack.me/ | sh
+#   curl -fsSL http://get.gstack.io/please | sh
 # or:
-#   wget -qO- https://please.gstack.me/ | sh
+#   wget -qO- http://get.gstack.io/please | sh
 #
 #
 # To install a specific version, just inject the 'VERSION' environment
 # variable in the process like this:
 #
-#   VERSION=6.15.0 sh -c "curl -fsSL https://please.gstack.me/ | sh"
+#   VERSION=6.15.0 sh -c "curl -fsSL http://get.gstack.io/please | sh"
 #
 # If you want this script to be quiet, just ask this way:
 #
-#   QUIET=yes sh -c "curl -fsSL https://please.gstack.me/ | sh"
+#   QUIET=yes sh -c "curl -fsSL http://get.gstack.io/please | sh"
 
 
 VERSION=${VERSION:-6.16.0}
