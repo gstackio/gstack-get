@@ -131,7 +131,7 @@ rock_the_gstack() {
 
 	temp_tgz=`mktemp`
 
-	inform 'Downloading the Gstack package...' >&2
+	inform 'Downloading package archive...' >&2
 	$curl "https://cli.run.pivotal.io/stable?release=${release}&version=${VERSION}" > "$temp_tgz"
 
 	inform 'Extracting the "gk" command...' >&2
