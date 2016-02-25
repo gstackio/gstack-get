@@ -1,0 +1,148 @@
+#!/bin/sh
+set -e
+#
+# This script is meant for quick & easy install via:
+#   curl -fsSL https://please.gstack.me/ | sh
+# or:
+#   wget -qO- https://please.gstack.me/ | sh
+#
+#
+# To install a specific version, just inject the 'VERSION' environment
+# variable in the process like this:
+#
+#   VERSION=6.15.0 sh -c "curl -fsSL https://please.gstack.me/ | sh"
+#
+# If you want this script to be quiet, just ask this way:
+#
+#   QUIET=yes sh -c "curl -fsSL https://please.gstack.me/ | sh"
+
+
+VERSION=${VERSION:-6.16.0}
+
+
+command_exists() {
+	command -v "$@" > /dev/null 2>&1
+}
+
+inform() {
+	if [ -z "$QUIET" ]; then
+		echo "$@" >&2
+	fi
+}
+
+rock_the_gstack() {
+	os_name=`uname`
+	if [ "$os_name" = 'Darwin' ]; then
+		case "$(uname -m)" in
+			*64)
+				release=macosx64-binary
+				;;
+			*)
+				cat >&2 <<-'EOF'
+
+					ERROR: you are not using a 64bit OS X system.
+					Gstack currently only supports 64bit OS X systems.
+
+				EOF
+				exit 1
+				;;
+		esac
+	elif [ "$os_name" = 'Linux' ]; then
+		case "$(uname -m)" in
+			*64)
+				release=linux64-binary
+				;;
+			*)
+				release=linux32-binary
+				;;
+		esac
+	else
+		# intentionally mixed spaces and tabs here -- tabs are stripped by "<<-'EOF'", spaces are kept in the output
+		cat >&2 <<-'EOF'
+
+		  ERROR: either your platform is not easily detectable, is not
+		  supported by this installer script (yet - PRs welcome!), or
+		  does not yet have a package for Gstack. Please visit the
+		  following URL for more detailed installation instructions:
+
+		    https://docs.gstack.io/
+
+		EOF
+		exit 1
+	fi
+
+	user="$(id -un 2>/dev/null || true)"
+	if [ "$user" = 'root' ]; then
+		cat >&2 <<-'EOF'
+
+			WARNING: this installer is not supposed to be run as root for a global install.
+			If you continue, the "gk" command will be installed for the root user only.
+
+			You may press Ctrl+C now to abort this script.
+
+		EOF
+		( set -x; sleep 20 )
+	fi
+
+	curl=''
+	if command_exists curl; then
+		curl='curl -fsSL'
+		# -f, --fail
+		# -s, --silent
+		# -S, --show-error
+		# -L, --location
+	elif command_exists wget; then
+		curl='wget -qO-'
+	elif command_exists busybox && busybox --list-modules | grep -q wget; then
+		curl='busybox wget -qO-'
+	else
+		cat >&2 <<-EOF
+
+			ERROR: thsi script was unable to locate any 'curl' or 'wget' utility.
+			Please install one of these, and start this script again.
+
+		EOF
+		exit 1
+	fi
+
+	bin_dir="$HOME/bin"
+	if [ -e "$bin_dir" -a ! -d "$bin_dir" ]; then
+		cat >&2 <<-EOF
+
+			ERROR: you have a file named '$bin_dir' that prevents this
+			script from installing the "gk" command.
+			Please move this '$bin_dir' file out of the way and start
+			this script again.
+
+		EOF
+		exit 1
+	fi
+	mkdir -p "$bin_dir"
+	if ! echo "$PATH" | tr : '\n' | grep -qF "$bin_dir"; then
+		if [ -r "$HOME/.profile" ]; then
+			profile_file=.profile
+		elif [ -r "$HOME/.bash_profile" ]; then
+			profile_file=.bash_profile
+		fi
+		# Here we wan't this not to depende on the exact value of $HOME:
+		echo 'export PATH=$HOME/bin:$PATH' >> "$HOME/$profile_file"
+		export PATH=$HOME/bin:$PATH
+	fi
+
+	temp_tgz=`mktemp`
+
+	inform 'Downloading the Gstack package...' >&2
+	$curl "https://cli.run.pivotal.io/stable?release=${release}&version=${VERSION}" > "$temp_tgz"
+
+	inform 'Extracting the "gk" command...' >&2
+	tar -zxf "$temp_tgz" -O cf > "$bin_dir/gk"
+	rm "$temp_tgz"
+	chmod +rx "$bin_dir/gk"
+
+	inform 'Done!' >&2
+}
+
+
+# Wrapped up in a function so that we have some protection against
+# only getting half the file during "curl | sh"
+rock_the_gstack
