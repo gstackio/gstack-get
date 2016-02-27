@@ -17,7 +17,7 @@ set -e
 #   QUIET=yes sh -c "curl -fsSL http://get.gstack.io/please | sh"
 
 
-VERSION=${VERSION:-6.16.0}
+VERSION=${VERSION:-6.16.1}
 
 
 command_exists() {
