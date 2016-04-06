@@ -118,18 +118,6 @@ rock_the_gstack() {
 		exit 1
 	fi
 	mkdir -p "$bin_dir"
-	if ! echo "$PATH" | tr : '\n' | grep -qF "$bin_dir"; then
-		if [ -r "$HOME/.profile" ]; then
-			profile_file=.profile
-		elif [ -r "$HOME/.bash_profile" ]; then
-			profile_file=.bash_profile
-		elif [ -r "$HOME/.bashrc" ]; then
-			profile_file=.bashrc
-		fi
-		# Here we want this not to depend on the exact value of $HOME:
-		echo 'export PATH=$HOME/bin:$PATH' >> "$HOME/$profile_file"
-		export PATH=$HOME/bin:$PATH
-	fi
 
 	temp_tgz=`mktemp`
 
@@ -142,6 +130,19 @@ rock_the_gstack() {
 	chmod +rx "$bin_dir/gk"
 
 	inform 'Done!' >&2
+
+	if ! echo "$PATH" | tr : '\n' | grep -qF "$bin_dir"; then
+		if [ -r "$HOME/.profile" ]; then
+			profile_file=.profile
+		elif [ -r "$HOME/.bash_profile" ]; then
+			profile_file=.bash_profile
+		elif [ -r "$HOME/.bashrc" ]; then
+			profile_file=.bashrc
+		fi
+		# Here we want this not to depend on the exact value of $HOME:
+		echo 'export PATH=$HOME/bin:$PATH' >> "$HOME/$profile_file"
+		echo "Run 'export PATH=\$HOME/bin:\$PATH' to add 'gk' to your path or restart your shell session."
+	fi
 }
 
 
