@@ -123,8 +123,10 @@ rock_the_gstack() {
 			profile_file=.profile
 		elif [ -r "$HOME/.bash_profile" ]; then
 			profile_file=.bash_profile
+		elif [ -r "$HOME/.bashrc" ]; then
+			profile_file=.bashrc
 		fi
-		# Here we wan't this not to depende on the exact value of $HOME:
+		# Here we want this not to depend on the exact value of $HOME:
 		echo 'export PATH=$HOME/bin:$PATH' >> "$HOME/$profile_file"
 		export PATH=$HOME/bin:$PATH
 	fi
