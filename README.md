@@ -21,6 +21,3 @@ For further help just type:
     gk help
 
 Happy Gstack!!
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/gstackio/gstack-get/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
