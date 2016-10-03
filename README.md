@@ -1,4 +1,4 @@
-Get Gstack [![.](http://gaproxy.gstack.io/UA-74118635-2/github.com/gstackio/gstack-get/readme?pixel)](https://github.com/gstackio/ga-beacon)
+Get Gstack [![.](https://gaproxy.gstack.io/UA-74118635-2/gstackio/gstack-get/readme?pixel&dh=github.com)](https://github.com/gstackio/ga-beacon)
 ==========
 
 To install the Gstack command, just run:
